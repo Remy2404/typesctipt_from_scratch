@@ -1,3 +1,4 @@
+import log = require("console");
 import console = require("console");
 import fs = require("fs");
 import vm = require("vm");
@@ -838,17 +839,124 @@ Math Anology :
 3D point (x, y, z) 
 Remove z -> falttend 2D point in xy-plane.
  */
-// interface Point3D1 {
-//   x: number, 
-//   y: number ,
-//   z: number , 
-// }
-// const addNewOmit = { color : "red" , time : 2024 }
-// type Noz = Omit<Point3D1, "z" | "y" & keyof typeof addNewOmit> 
-// const falt : Noz = {
-//   x : 5 
-//   color : "red",
-//   time : 2024
-// }
-// console.log("Omit" , falt)
-// console.log("Keys:", Object.keys(falt));
+interface Point3D1 {
+  x: number, 
+  y: number ,
+  z: number , 
+}
+const addNewOmit = { color : "red" , time : 2024 }
+type Noz = Omit<Point3D1, "z"> & typeof addNewOmit 
+const falt : Noz = {
+  x : 5,
+  y: 10,
+  color : "red",
+  time : 2024
+}
+console.log("Omit" , falt)
+console.log("Keys:", Object.keys(falt));
+
+//ts keyof operator
+/*
+Concept : keyof is a keyword in ts which is used to extract the key type from an object type.
+
+when used on an object type with explict , <keyof> create a union type with those keys
+ */
+
+interface PersonType {
+  name : string;
+  age : number;
+}
+function printPersonProperty(personP : PersonType , props : keyof PersonType) {
+  console.log(`Printing person properites ${personP[props]}`)
+};
+let personP = {
+  name : "memes", 
+  age : 21
+}
+printPersonProperty(personP , "age")
+
+type StringMap = { [key: string]: unknown };
+// `keyof StringMap` resolves to `string` here
+function createStringPair(property: keyof StringMap, value: string): StringMap {
+  return { [property]: value };
+}
+console.log(JSON.stringify(createStringPair('greeting', 'hello')));
+
+// null & undefenined in typescript :
+/* 
+Concept : Typsscript has a powerful to dal with null or undefined valuses
+by default null & undeifned handling is disabled , and can be enabaled by setting strictNullCheck to true.
+
+the rest of the page applies for when strictNullCheck is enabled.
+ */
+function getLength(str: string | null | undefined): number {
+  if (str === null || str === undefined) {
+    return 0;
+  }
+  return str.length;
+}
+console.log(getLength("Hello, TypeScript!")); // Outputs: 18
+console.log(getLength(null));
+console.log(getLength(""));
+console.log(getLength(undefined));
+
+//Optional Chaining 
+/*
+Optional chaining is javascript feature that working well with typeScript null handling.
+it allows accessing pros on an object that may or may not exist using compact syntax
+it can be used with the ?. Opeator when accesing pros 
+ */
+interface House {
+  sqft : number;
+  yard? : {
+    sqft : number;
+  };
+}
+function printYardSize(house : House) {
+  const yardSize = house.yard?.sqft;
+  if(yardSize === undefined) {
+    console.log(`no yard!`);
+  } else {
+    console.log(`yard is ${yardSize} sqft`)
+  }
+}
+let home :House = {
+  sqft :500
+}
+printYardSize(home)
+// with yard
+home = {
+  sqft : 800,
+  yard : {
+    sqft : 200
+  }
+}
+printYardSize(home)
+//null Assertion operator (!)
+/*
+the non-null assertion operator ! is a way to tell the typescript compiler that a value is not null or undefined
+
+even if the compiler cannot deduce that fact itself.
+ */
+function printLength(str: string ) {
+  console.log(`Length is ${str!.length}`);
+}
+printLength("");
+
+let val3 : string | null | undefined
+console.log(val3?.length)
+function getValue(): string {
+  return "hello";
+}
+
+// let value1= getValue();
+
+// console.log("Length:", value1!.length);
+
+// let value2: string | undefined;
+// console.log(value2!.length)
+function findUser(): string | undefined {
+  return Math.random() > 0.5 ? "Ramy" : undefined
+}
+let userName = findUser();
+console.log(userName!.toUpperCase());
